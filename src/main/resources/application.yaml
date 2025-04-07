@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3308/hospital
+    url: jdbc:mysql://localhost:3308/the_sun_hospital
     username: root
     password: admin123
 

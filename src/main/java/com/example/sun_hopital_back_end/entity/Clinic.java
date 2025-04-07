@@ -8,12 +8,25 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.Date;
 
 @Data
-@Entity(name = "role")
-public class Role {
+@Entity(name = "clinic")
+public class Clinic {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String info;
+
+    @Column(columnDefinition = "TEXT")
+    private String address;
+
+    @Column(columnDefinition = "TEXT")
+    private String image;
+
+    @Column(columnDefinition = "JSON")
+    private String operateTimes;
+
+    @Column(columnDefinition = "TEXT")
+    private String linkMap;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -25,12 +38,5 @@ public class Role {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedAt;
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", role_title='" + name + '\'' +
-                '}';
-    }
 }
+

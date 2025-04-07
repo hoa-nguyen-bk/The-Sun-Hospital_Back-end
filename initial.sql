@@ -1,47 +1,78 @@
-CREATE DATABASE the_sun_hospital;
-use the_sun_hospital;
+-- Create database with full Unicode support
+CREATE
+DATABASE the_sun_hospital
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE
+the_sun_hospital;
+
+-- Table: role
 CREATE TABLE role (
     id INT PRIMARY KEY,
-    name VARCHAR(255)
+    name       VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL
 );
 
+-- Table: specialization
 CREATE TABLE specialization (
     id INT PRIMARY KEY,
     name VARCHAR(255),
-    description TEXT
+    description TEXT,
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at  DATETIME DEFAULT NULL
 );
 
+-- Table: clinic
 CREATE TABLE clinic (
     id INT PRIMARY KEY,
     info TEXT,
     address TEXT,
     image TEXT,
-    operate_times TEXT,
+    operate_times JSON,
     link_map TEXT,
-    work_hours TEXT
+    created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at    DATETIME DEFAULT NULL
 );
 
+-- Table: clinic_specialization
 CREATE TABLE clinic_specialization (
     id INT PRIMARY KEY,
     clinic_id INT,
-    specialization_id INT
+    specialization_id INT,
+    created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at        DATETIME DEFAULT NULL
 );
 
+-- Table: symptoms
 CREATE TABLE symptoms (
     id INT PRIMARY KEY,
     name VARCHAR(255),
     description TEXT,
-    specialization_id INT
+    specialization_id INT,
+    created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at        DATETIME DEFAULT NULL
 );
 
+-- Table: services
 CREATE TABLE services (
     id INT PRIMARY KEY,
     name VARCHAR(255),
     description TEXT,
     specialization_id INT,
-    price DECIMAL(10, 2)
+    price      DECIMAL(10, 2),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL
 );
 
+-- Table: user
 CREATE TABLE user (
     id INT PRIMARY KEY,
     specialization_id INT,
@@ -50,22 +81,26 @@ CREATE TABLE user (
     last_name VARCHAR(255),
     date_of_birth DATE,
     address TEXT,
-    contact VARCHAR(255),
+    email       VARCHAR(255),
+    phone       VARCHAR(255),
     role_id INT,
     medical_history TEXT,
     avatar TEXT,
-    favourites TEXT,
+    favourites  JSON,
     blood_group VARCHAR(10),
     password VARCHAR(255),
-    contact_information TEXT,
     years_experience INT,
     level VARCHAR(255),
     status VARCHAR(255),
     languages TEXT,
     awards TEXT,
-    description TEXT
+    description TEXT,
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at  DATETIME DEFAULT NULL
 );
 
+-- Table: appointment
 CREATE TABLE appointment (
     id INT PRIMARY KEY,
     patient_id INT,
@@ -81,18 +116,26 @@ CREATE TABLE appointment (
     code VARCHAR(255),
     status_request VARCHAR(255),
     clinic_id INT,
-    services TEXT
+    services   TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL
 );
 
+-- Table: time_allocation
 CREATE TABLE time_allocation (
     id INT PRIMARY KEY,
     doctor_id INT,
     work_hours TEXT,
-    availability TEXT,
+    availability JSON,
     status VARCHAR(255),
-    date DATE
+    date         DATE,
+    created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at   DATETIME DEFAULT NULL
 );
 
+-- Table: review
 CREATE TABLE review (
     id INT PRIMARY KEY,
     doctor_id INT,
@@ -100,10 +143,13 @@ CREATE TABLE review (
     patient_id INT,
     star INT,
     recommended BOOLEAN,
-    note TEXT
+    note       TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL
 );
 
--- clinic_specialization
+-- Foreign keys
 ALTER TABLE clinic_specialization
 ADD CONSTRAINT fk_clinic_specialization_clinic
 FOREIGN KEY (clinic_id) REFERENCES clinic(id);
@@ -112,17 +158,14 @@ ALTER TABLE clinic_specialization
 ADD CONSTRAINT fk_clinic_specialization_specialization
 FOREIGN KEY (specialization_id) REFERENCES specialization(id);
 
--- symptoms
 ALTER TABLE symptoms
 ADD CONSTRAINT fk_symptoms_specialization
 FOREIGN KEY (specialization_id) REFERENCES specialization(id);
 
--- services
 ALTER TABLE services
 ADD CONSTRAINT fk_services_specialization
 FOREIGN KEY (specialization_id) REFERENCES specialization(id);
 
--- user
 ALTER TABLE user
 ADD CONSTRAINT fk_user_role
 FOREIGN KEY (role_id) REFERENCES role(id);
@@ -135,7 +178,6 @@ ALTER TABLE user
 ADD CONSTRAINT fk_user_clinic
 FOREIGN KEY (clinic_id) REFERENCES clinic(id);
 
--- appointment
 ALTER TABLE appointment
 ADD CONSTRAINT fk_appointment_patient
 FOREIGN KEY (patient_id) REFERENCES user(id);
@@ -148,12 +190,10 @@ ALTER TABLE appointment
 ADD CONSTRAINT fk_appointment_clinic
 FOREIGN KEY (clinic_id) REFERENCES clinic(id);
 
--- time_allocation
 ALTER TABLE time_allocation
 ADD CONSTRAINT fk_time_allocation_doctor
 FOREIGN KEY (doctor_id) REFERENCES user(id);
 
--- review
 ALTER TABLE review
 ADD CONSTRAINT fk_review_doctor
 FOREIGN KEY (doctor_id) REFERENCES user(id);
