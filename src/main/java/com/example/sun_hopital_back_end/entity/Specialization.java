@@ -8,12 +8,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.util.Date;
 
 @Data
-@Entity(name = "role")
-public class Role {
+@Entity(name = "specialization")
+public class Specialization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -25,12 +28,4 @@ public class Role {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedAt;
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", role_title='" + name + '\'' +
-                '}';
-    }
 }
