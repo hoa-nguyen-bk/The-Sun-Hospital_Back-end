@@ -19,7 +19,7 @@ Driver Properties:
 
 You can set name to The sun hospital
 
-Then go to file `initial.sql` and run all sql in that host
+
 Check for the diagram in Bbeaver, it should look like this
 
 ![alt text](image_read_me/image2.png)

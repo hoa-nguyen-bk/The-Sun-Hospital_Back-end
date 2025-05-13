@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Thêm dòng này
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/authentication/login").permitAll();
+                    request.requestMatchers("/authentication/**").permitAll();
                     request.anyRequest().authenticated();
                 }).build();
     }

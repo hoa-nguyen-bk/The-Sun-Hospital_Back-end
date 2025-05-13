@@ -1,8 +1,8 @@
 
 -- Table: role
 CREATE TABLE role (
-                      id INT PRIMARY KEY,
-                      name       VARCHAR(255),
+                      id INT PRIMARY KEY AUTO_INCREMENT,
+                      name VARCHAR(255),
                       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                       deleted_at DATETIME DEFAULT NULL
@@ -10,55 +10,55 @@ CREATE TABLE role (
 
 -- Table: specialization
 CREATE TABLE specialization (
-                                id INT PRIMARY KEY,
+                                id INT PRIMARY KEY AUTO_INCREMENT,
                                 name VARCHAR(255),
                                 description TEXT,
-                                created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                deleted_at  DATETIME DEFAULT NULL
+                                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                deleted_at DATETIME DEFAULT NULL
 );
 
 -- Table: clinic
 CREATE TABLE clinic (
-                        id INT PRIMARY KEY,
+                        id INT PRIMARY KEY AUTO_INCREMENT,
                         info TEXT,
                         address TEXT,
                         image TEXT,
                         operate_times JSON,
                         link_map TEXT,
-                        created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                        deleted_at    DATETIME DEFAULT NULL
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        deleted_at DATETIME DEFAULT NULL
 );
 
 -- Table: clinic_specialization
 CREATE TABLE clinic_specialization (
-                                       id INT PRIMARY KEY,
+                                       id INT PRIMARY KEY AUTO_INCREMENT,
                                        clinic_id INT,
                                        specialization_id INT,
-                                       created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                       updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                       deleted_at        DATETIME DEFAULT NULL
+                                       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                       deleted_at DATETIME DEFAULT NULL
 );
 
 -- Table: symptoms
 CREATE TABLE symptoms (
-                          id INT PRIMARY KEY,
+                          id INT PRIMARY KEY AUTO_INCREMENT,
                           name VARCHAR(255),
                           description TEXT,
                           specialization_id INT,
-                          created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
-                          updated_at        DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                          deleted_at        DATETIME DEFAULT NULL
+                          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                          deleted_at DATETIME DEFAULT NULL
 );
 
 -- Table: services
 CREATE TABLE services (
-                          id INT PRIMARY KEY,
+                          id INT PRIMARY KEY AUTO_INCREMENT,
                           name VARCHAR(255),
                           description TEXT,
                           specialization_id INT,
-                          price      DECIMAL(10, 2),
+                          price DECIMAL(10, 2),
                           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                           deleted_at DATETIME DEFAULT NULL
@@ -66,19 +66,19 @@ CREATE TABLE services (
 
 -- Table: user
 CREATE TABLE user (
-                      id INT PRIMARY KEY,
+                      id INT PRIMARY KEY AUTO_INCREMENT,
                       specialization_id INT,
                       clinic_id INT,
                       first_name VARCHAR(255),
                       last_name VARCHAR(255),
                       date_of_birth DATE,
                       address TEXT,
-                      email       VARCHAR(255),
-                      phone       VARCHAR(255),
+                      email VARCHAR(255),
+                      phone VARCHAR(255),
                       role_id INT,
                       medical_history TEXT,
                       avatar TEXT,
-                      favourites  JSON,
+                      favourites JSON,
                       blood_group VARCHAR(10),
                       password VARCHAR(255),
                       years_experience INT,
@@ -87,14 +87,14 @@ CREATE TABLE user (
                       languages TEXT,
                       awards TEXT,
                       description TEXT,
-                      created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-                      updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                      deleted_at  DATETIME DEFAULT NULL
+                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                      deleted_at DATETIME DEFAULT NULL
 );
 
 -- Table: appointment
 CREATE TABLE appointment (
-                             id INT PRIMARY KEY,
+                             id INT PRIMARY KEY AUTO_INCREMENT,
                              patient_id INT,
                              doctor_id INT,
                              book_time DATETIME,
@@ -108,7 +108,7 @@ CREATE TABLE appointment (
                              code VARCHAR(255),
                              status_request VARCHAR(255),
                              clinic_id INT,
-                             services   TEXT,
+                             services TEXT,
                              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                              deleted_at DATETIME DEFAULT NULL
@@ -116,30 +116,31 @@ CREATE TABLE appointment (
 
 -- Table: time_allocation
 CREATE TABLE time_allocation (
-                                 id INT PRIMARY KEY,
+                                 id INT PRIMARY KEY AUTO_INCREMENT,
                                  doctor_id INT,
                                  work_hours TEXT,
                                  availability JSON,
                                  status VARCHAR(255),
-                                 date         DATE,
-                                 created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                 updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                 deleted_at   DATETIME DEFAULT NULL
+                                 date DATE,
+                                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                 deleted_at DATETIME DEFAULT NULL
 );
 
 -- Table: review
 CREATE TABLE review (
-                        id INT PRIMARY KEY,
+                        id INT PRIMARY KEY AUTO_INCREMENT,
                         doctor_id INT,
                         appointment_id INT,
                         patient_id INT,
                         star INT,
                         recommended BOOLEAN,
-                        note       TEXT,
+                        note TEXT,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         deleted_at DATETIME DEFAULT NULL
 );
+
 
 -- Foreign keys
 ALTER TABLE clinic_specialization
