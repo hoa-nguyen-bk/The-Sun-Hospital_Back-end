@@ -1,6 +1,12 @@
 server:
   port: 8081
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    com.example.sun_hopital_back_end: DEBUG
+
 spring:
   flyway:
     enabled: true

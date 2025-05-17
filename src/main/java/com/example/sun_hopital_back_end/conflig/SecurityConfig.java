@@ -15,8 +15,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
+
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true) // Enable debug logging
 public class SecurityConfig {
 
     @Bean
@@ -24,29 +25,28 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthenticateFilter customAuthenticateFilter, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/authentication/**", "/symptom").permitAll();
+                    request.requestMatchers("/authentication/**", "/symptom/**").permitAll(); // Explicitly allow all /symptom endpoints
                     request.anyRequest().authenticated();
                 })
-                // Stateless session (required for JWT)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(customAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(customAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        // Allow all origins for testing; revert to specific origins in production
+        config.setAllowedOrigins(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(false); // Set to false when allowing all origins
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
