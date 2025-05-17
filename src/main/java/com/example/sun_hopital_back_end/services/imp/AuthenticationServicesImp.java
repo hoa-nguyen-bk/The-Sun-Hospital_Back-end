@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.sun_hopital_back_end.payload.response.BaseResponse;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -28,6 +27,9 @@ public class AuthenticationServicesImp implements AuthenticationServices {
 
     @Override
     public String authenticate(String email, String password) {
+//        String data = JwtUtils.decodeToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZWwifQ.ljOQDEd_P88q2XMtORnNqmdxIbTkoEAqjQ75WUNhCTE");
+//        System.out.println("data = "+data);
+
         System.out.println("Received login request:");
         System.out.println("Email: " + email);
         System.out.println("Password: " + password);

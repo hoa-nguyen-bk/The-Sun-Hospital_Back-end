@@ -10,14 +10,7 @@ import com.example.sun_hopital_back_end.services.AuthenticationServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/authentication")
@@ -34,16 +27,16 @@ public class AuthenticationController {
     private RoleRepository roleRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<?> signIn(@RequestBody LoginRequest loginRequest) {
-        String token = authenticationServices.authenticate(loginRequest.getEmail(), loginRequest.getPassword()).toString();
+    public ResponseEntity<?> signIn(@Valid @RequestBody LoginRequest loginRequest) {
+        String token = authenticationServices.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         BaseResponse response = new BaseResponse();
         if (token.isEmpty()) {
             response.setCode(401);
-            response.setMessage("Email hoặc mật khẩu không đúng");
+            response.setMessage("Email or password is incorrect");
             return ResponseEntity.status(401).body(response);
         } else {
             response.setCode(200);
-            response.setMessage("Đăng nhập thành công");
+            response.setMessage("Login successful");
             response.setData(token);
             return ResponseEntity.ok(response);
         }
