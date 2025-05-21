@@ -15,13 +15,20 @@ public class SymptomController {
     private SymptomServices symptomServices;
 
     @GetMapping
-    public ResponseEntity<?> getAllSymptom(
+    public ResponseEntity<?> getAllSymptoms(
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(required = false) Integer pageSize) {
-//        System.out.println("Received request for getAllSymptom, pageNumber: " + pageNumber + ", pageSize: " + (pageSize != null ? pageSize : "all"));
         BaseResponse response = new BaseResponse();
         response.setCode(200);
         response.setData(symptomServices.getAllSymptoms(pageNumber, pageSize));
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/with-specialization")
+    public ResponseEntity<?> getSymptomsWithSpecializations() {
+        BaseResponse response = new BaseResponse();
+        response.setCode(200);
+        response.setData(symptomServices.getSymptomsWithSpecializations());
         return ResponseEntity.ok(response);
     }
 
@@ -31,5 +38,22 @@ public class SymptomController {
         response.setCode(201);
         response.setData(symptomServices.createSymptom(symptomDto));
         return ResponseEntity.status(201).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateSymptom(@PathVariable Integer id, @Valid @RequestBody SymptomDto symptomDto) {
+        BaseResponse response = new BaseResponse();
+        response.setCode(200);
+        response.setData(symptomServices.updateSymptom(id, symptomDto));
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSymptom(@PathVariable Integer id) {
+        symptomServices.deleteSymptom(id);
+        BaseResponse response = new BaseResponse();
+        response.setCode(200);
+        response.setData("Symptom deleted successfully");
+        return ResponseEntity.ok(response);
     }
 }
