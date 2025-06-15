@@ -1,5 +1,6 @@
 package com.example.sun_hopital_back_end.exception;
 
+import com.example.sun_hopital_back_end.payload.response.BaseResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +49,13 @@ public class GlobalExceptionHandler {
         body.put("errors", errors);
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<BaseResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        BaseResponse response = new BaseResponse();
+        response.setCode(400);
+        response.setData(Map.of("error", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

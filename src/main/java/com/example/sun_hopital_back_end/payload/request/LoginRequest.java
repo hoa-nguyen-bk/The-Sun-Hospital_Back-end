@@ -1,32 +1,16 @@
 package com.example.sun_hopital_back_end.payload.request;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class LoginRequest {
+    @NotNull(message = "Email is required")
+    @NotEmpty(message = "Email cannot be empty")
     private String email;
+
+    @NotNull(message = "Password is required")
+    @NotEmpty(message = "Password cannot be empty")
     private String password;
-
-    // Constructor (tuỳ chọn)
-    public LoginRequest() {}
-
-    public LoginRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    // Getter & Setter
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

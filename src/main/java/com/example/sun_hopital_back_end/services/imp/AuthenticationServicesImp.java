@@ -1,40 +1,43 @@
 package com.example.sun_hopital_back_end.services.imp;
 
-
-import com.example.sun_hopital_back_end.entity.Patient;
-import com.example.sun_hopital_back_end.repository.PatientRepository;
+import com.example.sun_hopital_back_end.dto.SignUpDto;
+import com.example.sun_hopital_back_end.entity.Role;
+import com.example.sun_hopital_back_end.entity.User;
+import com.example.sun_hopital_back_end.repository.RoleRepository;
+import com.example.sun_hopital_back_end.repository.UserRepository;
 import com.example.sun_hopital_back_end.services.AuthenticationServices;
 import com.example.sun_hopital_back_end.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.sun_hopital_back_end.payload.response.BaseResponse;
 
 import java.util.Optional;
 
 @Service
 public class AuthenticationServicesImp implements AuthenticationServices {
     @Autowired
-    private PatientRepository patientRepository;
+    private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtils jwtUtils;
-
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public String authenticate(String email, String password) {
+//        String data = JwtUtils.decodeToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZWwifQ.ljOQDEd_P88q2XMtORnNqmdxIbTkoEAqjQ75WUNhCTE");
+//        System.out.println("data = "+data);
+
         System.out.println("Received login request:");
         System.out.println("Email: " + email);
         System.out.println("Password: " + password);
-
         String token = "";
-
-        Optional<Patient> patientOptional = patientRepository.findByEmail(email);
-
-        if (patientOptional.isPresent()) {
-            Patient patient = patientOptional.get();
-            if (passwordEncoder.matches(password, patient.getPassword())) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 token = jwtUtils.generateToken("Hello");
             }
         }
@@ -42,4 +45,34 @@ public class AuthenticationServicesImp implements AuthenticationServices {
     }
 
 
+    @Override
+    public BaseResponse registerUser(SignUpDto signUpDto) {
+        BaseResponse response = new BaseResponse();
+
+        if (userRepository.existsByEmail(signUpDto.getEmail())) {
+            response.setCode(400);
+            response.setMessage("Username is already taken!");
+            return response;
+        }
+
+        if (userRepository.existsByEmail(signUpDto.getEmail())) {
+            response.setCode(400);
+            response.setMessage("Email is already taken!");
+            return response;
+        }
+
+        User user = new User();
+        user.setEmail(signUpDto.getEmail());
+        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+
+        Role role = roleRepository.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        user.setRole(role);
+        userRepository.save(user);
+
+        response.setCode(200);
+        response.setMessage("User registered successfully");
+        return response;
+    }
 }

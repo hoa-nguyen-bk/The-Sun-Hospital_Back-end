@@ -1,23 +1,16 @@
 package com.example.sun_hopital_back_end.controller;
 
-import com.example.sun_hopital_back_end.payload.request.SignUpRequest;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Encoders;
-import jakarta.validation.Valid;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*; // Import đầy đủ annotation
-import org.springframework.http.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.example.sun_hopital_back_end.payload.response.BaseResponse;
 import com.example.sun_hopital_back_end.payload.request.LoginRequest;
+import com.example.sun_hopital_back_end.payload.request.SignUpRequest;
+import com.example.sun_hopital_back_end.payload.response.BaseResponse;
+import com.example.sun_hopital_back_end.repository.UserRepository;
+import com.example.sun_hopital_back_end.repository.RoleRepository;
+import com.example.sun_hopital_back_end.dto.SignUpDto;
 import com.example.sun_hopital_back_end.services.AuthenticationServices;
-
-import javax.crypto.SecretKey;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authentication")
@@ -27,40 +20,36 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationServices authenticationServices;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
     @PostMapping("/login")
-    public ResponseEntity<?> signIn(@RequestBody LoginRequest loginRequest) { // Đổi sang @RequestBody
-        SecretKey key = Jwts.SIG.HS256.key().build();
-        String secretString = Encoders.BASE64.encode(key.getEncoded());
-        System.out.println("Key: " + secretString);
+    public ResponseEntity<?> signIn(@Valid @RequestBody LoginRequest loginRequest) {
         String token = authenticationServices.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         BaseResponse response = new BaseResponse();
-        response.setData(token);
-        response.setMessage("");
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest request, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<Map<String, String>> errors = new ArrayList<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                Map<String, String> errorMap = new HashMap<>();
-                errorMap.put("field", error.getField());
-                errorMap.put("message", error.getDefaultMessage());
-                errors.add(errorMap);
-            }
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("code", 400);
-            response.put("message", "Validation failed");
-            response.put("errors", errors);
-
-            return ResponseEntity.status(400).body(response);
+        if (token.isEmpty()) {
+            response.setCode(401);
+            response.setMessage("Email or password is incorrect");
+            return ResponseEntity.status(401).body(response);
+        } else {
+            response.setCode(200);
+            response.setMessage("Login successful");
+            response.setData(token);
+            return ResponseEntity.ok(response);
         }
-
-        BaseResponse response = new BaseResponse();
-        response.setData(request);
-        return ResponseEntity.ok(response);
     }
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest request) {
 
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setEmail(request.getEmail());
+        signUpDto.setPassword(request.getPassword());
+        // Add more fields if you add them later to the request
+
+        BaseResponse response = authenticationServices.registerUser(signUpDto);
+        return ResponseEntity.status(response.getCode()).body(response);
+    }
 }
